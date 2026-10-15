@@ -4,8 +4,8 @@ const PX = 4; // image pixels per module
 const QUIET_ZONE = 4; // white border, in modules
 
 // Draws the QR code into an image and tries to read it. Returns the decoded
-// text, or null. Damaged (red) modules are drawn flipped: black becomes white
-// and white becomes black, so every painted module is a real error.
+// text, or null. Damaged (red) modules are drawn black, because that's how a
+// phone camera sees red ink next to white paper.
 export function scanQr(qr: number[][], damage: boolean[][]): string | null {
   const modules = qr.length + QUIET_ZONE * 2;
   const width = modules * PX;
@@ -13,7 +13,7 @@ export function scanQr(qr: number[][], damage: boolean[][]): string | null {
 
   for (let y = 0; y < qr.length; y++) {
     for (let x = 0; x < qr.length; x++) {
-      const black = damage[y][x] ? !qr[y][x] : qr[y][x] === 1;
+      const black = damage[y][x] || qr[y][x] === 1;
       if (!black) continue; // white, already filled
 
       // Fill this module's PX x PX square of pixels

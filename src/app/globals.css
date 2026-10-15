@@ -1,14 +1,76 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-/* Colours: each one becomes a Tailwind class, e.g. bg-primary, text-muted, border-border */
-@theme {
-  --color-bg: #ffffff;
-  --color-surface: #f4f4f5;
-  --color-text: #1f2937;
-  --color-muted: #6b7280;
-  --color-primary: #2563eb;
-  --color-primary-dark: #1d4ed8;
-  --color-border: #e5e7eb;
-  --color-damage: #ef4444;
-  --color-ok: #16a34a;
+/* No dark mode: the shadcn components have dark: classes, and this makes them
+   only apply inside a .dark class, which we never use. */
+@custom-variant dark (&:is(.dark *));
+
+/* Makes the colours below available as Tailwind classes, e.g. bg-primary */
+@theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: var(--font-sans);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-success: var(--success);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* The colours (cool blues). shadcn components use all of these names, but
+   many of them just reuse another colour. */
+:root {
+  --background: oklch(0.985 0.008 250);
+  --foreground: oklch(0.22 0.04 260);
+  --card: oklch(1 0 0);
+  --primary: oklch(0.5 0.19 262);
+  --primary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.955 0.015 255);
+  --muted-foreground: oklch(0.5 0.03 258);
+  --border: oklch(0.9 0.02 255);
+  --destructive: oklch(0.6 0.22 25);
+  --success: oklch(0.6 0.15 155);
+
+  --card-foreground: var(--foreground);
+  --popover: var(--card);
+  --popover-foreground: var(--foreground);
+  --secondary: var(--muted);
+  --secondary-foreground: var(--foreground);
+  --accent: var(--muted);
+  --accent-foreground: var(--foreground);
+  --input: var(--border);
+  --ring: var(--primary);
+
+  --radius: 0.625rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
 }

@@ -2,6 +2,15 @@
 
 import { useState } from "react";
 import QrPainter from "@/components/QrPainter";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { LEVELS, makeQr, type Level } from "@/lib/qr";
 
 export default function QrDemo() {
@@ -24,35 +33,37 @@ export default function QrDemo() {
   return (
     <div className="flex flex-col items-start gap-4">
       <div className="flex flex-wrap gap-4">
-        <label className="flex flex-col gap-1">
-          <span className="text-sm text-muted">Text</span>
-          <input
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="qr-text">Text</Label>
+          <Input
+            id="qr-text"
             value={text}
             onChange={(e) => setText(e.target.value)}
-            className="w-72 rounded border border-border px-3 py-1"
+            className="w-72"
           />
-        </label>
-        <label className="flex flex-col gap-1">
-          <span className="text-sm text-muted">Error correction level</span>
-          <select
-            value={level}
-            onChange={(e) => setLevel(e.target.value as Level)}
-            className="rounded border border-border px-3 py-1"
-          >
-            {LEVELS.map((l) => (
-              <option key={l.value} value={l.value}>
-                {l.label}
-              </option>
-            ))}
-          </select>
-        </label>
+        </div>
+        <div className="flex flex-col gap-2">
+          <Label>Error correction level</Label>
+          <Select items={LEVELS} value={level} onValueChange={(v) => v && setLevel(v as Level)}>
+            <SelectTrigger className="w-56">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {LEVELS.map((l) => (
+                <SelectItem key={l.value} value={l.value}>
+                  {l.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {qr ? (
         // key: a new code starts the painter over with no damage
         <QrPainter key={`${level}:${text}`} qr={qr} />
       ) : (
-        <p className="text-damage">{error}</p>
+        <p className="text-destructive">{error}</p>
       )}
     </div>
   );
