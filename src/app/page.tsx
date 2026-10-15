@@ -1,3 +1,4 @@
+// 🚧 WORK IN PROGRESS — NOT DONE YET. See NOT_DONE_YET.md 🚧
 import QrDemo from "@/components/QrDemo";
 import ReadingProgress from "@/components/story/ReadingProgress";
 import FlyingQr from "@/components/story/FlyingQr";

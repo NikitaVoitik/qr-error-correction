@@ -1,3 +1,4 @@
+// 🚧 WORK IN PROGRESS — NOT DONE YET. See NOT_DONE_YET.md 🚧
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
