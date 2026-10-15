@@ -26,6 +26,7 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-success: var(--success);
+  --color-highlight: var(--highlight);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -49,6 +50,7 @@
   --border: oklch(0.9 0.02 255);
   --destructive: oklch(0.6 0.22 25);
   --success: oklch(0.6 0.15 155);
+  --highlight: oklch(0.78 0.15 75); /* amber, a second colour for QR diagrams */
 
   --card-foreground: var(--foreground);
   --popover: var(--card);

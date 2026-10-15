@@ -36,10 +36,11 @@ function QrSvg({ qr, appear }: { qr: number[][]; appear: boolean }) {
   );
 }
 
-// This is the QR code you see at the top and in the story card. The real ones ([data-qr-from] and [data-qr-to]) are invisible
-// placeholders, and this one sits on top of them: while you scroll past the
-// start screen it moves from the first to the second, shrinking and
-// dissolving from the start code into the story code.
+// This is the QR code you see at the top. The real ones ([data-qr-from] and
+// [data-qr-to]) start out as invisible placeholders, and this one sits on top
+// of them: while you scroll past the start screen it moves from the first to
+// the second, shrinking and dissolving from the start code into the story
+// code. When it lands, the real story code takes over.
 export default function FlyingQr() {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -47,13 +48,15 @@ export default function FlyingQr() {
     function update() {
       const flying = ref.current;
       const from = document.querySelector("[data-qr-from]");
-      const to = document.querySelector("[data-qr-to]");
+      const to = document.querySelector<HTMLElement>("[data-qr-to]");
       if (!flying || !from || !to) return;
 
-      // 0 at the top of the page, 1 after scrolling about one screen
-      const progress = Math.min(window.scrollY / (window.innerHeight * 0.9), 1);
-      // Ease in and out, so it starts and stops gently
-      const t = progress < 0.5 ? 2 * progress * progress : 1 - (-2 * progress + 2) ** 2 / 2;
+      // 0 at the top of the page, 1 once the start screen has scrolled away.
+      // Both codes move with the page until then, so going straight from one
+      // to the other keeps it on screen.
+      const startScreen = from.closest("section");
+      if (!startScreen) return;
+      const t = Math.min(window.scrollY / startScreen.offsetHeight, 1);
 
       // Somewhere between the two placeholders, depending on t
       const a = from.getBoundingClientRect();
@@ -64,6 +67,12 @@ export default function FlyingQr() {
       flying.style.width = `${mix(a.width, b.width)}px`;
       flying.style.height = `${mix(a.height, b.height)}px`;
       flying.style.setProperty("--t", String(t));
+
+      // Once it has landed, hide it and show the real story code underneath,
+      // so the story card can highlight parts of it
+      const landed = t >= 1;
+      flying.style.visibility = landed ? "hidden" : "visible";
+      to.style.visibility = landed ? "visible" : "hidden";
     }
 
     update();
