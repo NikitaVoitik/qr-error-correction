@@ -28,12 +28,12 @@ export default function Story({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-16">
+    <div className="grid grid-cols-[minmax(0,1fr)_400px] gap-16">
       {/* Left: the chapters */}
       <article className="max-w-2xl space-y-16 text-lg leading-relaxed">{children}</article>
 
-      {/* Right: the QR card that sticks while you scroll (desktop only) */}
-      <aside className="hidden lg:block">
+      {/* Right: the QR card that sticks while you scroll */}
+      <aside>
         <div className="sticky top-8">
           <StoryQr step={active} />
         </div>
@@ -42,16 +42,12 @@ export default function Story({ children }: { children: React.ReactNode }) {
   );
 }
 
-// One block of text that controls the QR card. On phones the card is shown
-// right under the text instead of sticking to the side.
+// One block of text that controls the QR card. Each block gets some height,
+// so the card has time to show it.
 export function StepBlock({ step, children }: { step: string; children?: React.ReactNode }) {
-  // On desktop each block gets some height, so the card has time to show it
   return (
-    <div data-step={step} className="space-y-5 lg:min-h-[60vh]">
+    <div data-step={step} className="min-h-[60vh] space-y-5">
       {children}
-      <div className="pt-2 lg:hidden">
-        <StoryQr step={step} small />
-      </div>
     </div>
   );
 }

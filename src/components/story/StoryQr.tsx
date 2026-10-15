@@ -1,34 +1,34 @@
 import QrGrid from "@/components/QrGrid";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { STORY_LEVEL, STORY_TEXT } from "@/components/story/codes";
 import { makeQr } from "@/lib/qr";
-
-const MESSAGE = "Hello, QR!";
-const LEVEL = "H";
 
 type Props = {
   step: string; // the data-step of the block being read right now
-  small?: boolean; // smaller version for phones
 };
 
 // The QR card next to the story. It gets the current step, so it can show
 // something different for each block of text.
-export default function StoryQr({ step, small = false }: Props) {
-  const qr = makeQr(MESSAGE, LEVEL);
+export default function StoryQr({ step }: Props) {
+  const qr = makeQr(STORY_TEXT, STORY_LEVEL);
 
   const size = qr.length;
-  // Fit the code into about 300px (200px on phones)
-  const cell = Math.floor((small ? 200 : 300) / size);
+  // Fit the code into about 300px
+  const cell = Math.floor(300 / size);
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-lg">{step}</CardTitle>
         <CardDescription>
-          “{MESSAGE}” · level {LEVEL} · {size}×{size} modules
+          “{STORY_TEXT}” · level {STORY_LEVEL} · {size}×{size} modules
         </CardDescription>
       </CardHeader>
       <CardContent className="flex justify-center">
-        <QrGrid qr={qr} cell={cell} />
+        {/* An invisible placeholder: FlyingQr.tsx draws the code on top of it */}
+        <div data-qr-to className="invisible">
+          <QrGrid qr={qr} cell={cell} />
+        </div>
       </CardContent>
     </Card>
   );

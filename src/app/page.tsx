@@ -1,5 +1,6 @@
 import QrDemo from "@/components/QrDemo";
 import ReadingProgress from "@/components/story/ReadingProgress";
+import FlyingQr from "@/components/story/FlyingQr";
 import StartScreen from "@/components/story/StartScreen";
 import Story, { Chapter, StepBlock } from "@/components/story/Story";
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 //
 // Building blocks (in src/components/story/):
 // - <StartScreen />: the title slide you see first
+// - <FlyingQr />: moves the start QR into the story card as you scroll
 // - <Story>: the two-column layout with the sticky QR card
 // - <Chapter number title>: a chapter heading
 // - <StepBlock step="any-name">: text that switches the QR card while it's on
@@ -19,8 +21,9 @@ export default function Home() {
       <ReadingProgress />
 
       <StartScreen />
+      <FlyingQr />
 
-      <main className="mx-auto max-w-6xl px-6 py-16 lg:py-24">
+      <main className="mx-auto max-w-6xl px-6 py-24">
         <Story>
           <StepBlock step="intro">{/* intro text */}</StepBlock>
 
