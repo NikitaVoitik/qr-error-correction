@@ -1,25 +1,26 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { QR_CODE } from "@/lib/qr";
 import { scanQr } from "@/lib/scan";
 
-const SIZE = QR_CODE.length;
-const CELL = 16; // px per module
 const QUIET_ZONE = 4; // white border scanners need, in modules
 
 // true = this module is painted red (damaged)
-function emptyDamage() {
-  return QR_CODE.map((row) => row.map(() => false));
+function emptyDamage(qr: number[][]) {
+  return qr.map((row) => row.map(() => false));
 }
 
-export default function QrPainter() {
-  const [damage, setDamage] = useState(emptyDamage);
+export default function QrPainter({ qr }: { qr: number[][] }) {
+  const [damage, setDamage] = useState(() => emptyDamage(qr));
   const painting = useRef(false);
+
+  const SIZE = qr.length;
+  // Bigger codes get smaller cells so the whole code stays about 400px wide
+  const CELL = Math.max(6, Math.min(16, Math.floor(400 / SIZE)));
 
   const damaged = damage.flat().filter(Boolean).length;
   const percent = ((damaged / (SIZE * SIZE)) * 100).toFixed(1);
-  const scanned = scanQr(QR_CODE, damage);
+  const scanned = scanQr(qr, damage);
 
   // Turn a mouse/finger position into a cell and paint it red
   function paintAt(e: React.PointerEvent<HTMLDivElement>) {
@@ -60,7 +61,7 @@ export default function QrPainter() {
           onPointerMove={(e) => painting.current && paintAt(e)}
           onPointerUp={() => (painting.current = false)}
         >
-          {QR_CODE.map((row, y) =>
+          {qr.map((row, y) =>
             row.map((cell, x) => (
               <div
                 key={`${x}-${y}`}
@@ -77,7 +78,7 @@ export default function QrPainter() {
           Damaged modules: {damaged} of {SIZE * SIZE} ({percent}%)
         </p>
         <button
-          onClick={() => setDamage(emptyDamage())}
+          onClick={() => setDamage(emptyDamage(qr))}
           className="rounded border border-border bg-surface px-3 py-1"
         >
           Reset

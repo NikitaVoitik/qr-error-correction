@@ -1,4 +1,4 @@
-import QrPainter from "@/components/QrPainter";
+import QrDemo from "@/components/QrDemo";
 
 export default function Home() {
   return (
@@ -8,7 +8,7 @@ export default function Home() {
         Paint red over the QR code to damage it and watch whether it can still
         be read. You can also scan it with your phone.
       </p>
-      <QrPainter />
+      <QrDemo />
     </main>
   );
 }
