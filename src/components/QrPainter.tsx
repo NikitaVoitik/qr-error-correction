@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { QR_CODE } from "@/lib/qr";
+import { scanQr } from "@/lib/scan";
 
 const SIZE = QR_CODE.length;
 const CELL = 16; // px per module
@@ -18,6 +19,7 @@ export default function QrPainter() {
 
   const damaged = damage.flat().filter(Boolean).length;
   const percent = ((damaged / (SIZE * SIZE)) * 100).toFixed(1);
+  const scanned = scanQr(QR_CODE, damage);
 
   // Turn a mouse/finger position into a cell and paint it red
   function paintAt(e: React.PointerEvent<HTMLDivElement>) {
@@ -36,6 +38,16 @@ export default function QrPainter() {
 
   return (
     <div className="flex flex-col items-start gap-4">
+      {scanned !== null ? (
+        <p className="rounded bg-ok/10 px-3 py-2 font-bold text-ok">
+          ✅ Still scannable: reads &ldquo;{scanned}&rdquo;
+        </p>
+      ) : (
+        <p className="rounded bg-damage/10 px-3 py-2 font-bold text-damage">
+          ❌ Not scannable anymore
+        </p>
+      )}
+
       <div className="border border-border bg-white" style={{ padding: CELL * QUIET_ZONE }}>
         <div
           className="grid cursor-crosshair touch-none select-none"
