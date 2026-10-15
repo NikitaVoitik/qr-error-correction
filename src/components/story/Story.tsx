@@ -83,6 +83,11 @@ export function Detail({ children }: { children: React.ReactNode }) {
   return <p className="text-xl leading-relaxed text-muted-foreground">{children}</p>;
 }
 
+// Ones and zeros inside the text, e.g. <Bits>0100</Bits>
+export function Bits({ children }: { children: React.ReactNode }) {
+  return <code className="font-mono font-semibold text-foreground">{children}</code>;
+}
+
 // Groups StepBlocks into a chapter. The title shows above each of its steps.
 export function Chapter({
   number,

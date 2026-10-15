@@ -25,14 +25,30 @@ export type ModuleKind =
 
 export type QrInfo = {
   grid: number[][]; // 1 = black, 0 = white
+  unmasked: number[][]; // the same code with the mask flipped back
   kind: ModuleKind[][];
-  byte: number[][]; // which byte a data module belongs to, or -1
+  bit: number[][]; // which bit of the data a module is (0, 1, 2, ...), or -1
   bytes: number; // how many bytes fit in the code
 };
 
+// The 8 masks a QR code can use. Each one says which modules to flip: the
+// library picks the one that leaves the fewest big black or white areas.
+const MASKS: ((x: number, y: number) => boolean)[] = [
+  (x, y) => (x + y) % 2 === 0,
+  (x, y) => y % 2 === 0,
+  (x) => x % 3 === 0,
+  (x, y) => (x + y) % 3 === 0,
+  (x, y) => (Math.floor(y / 2) + Math.floor(x / 3)) % 2 === 0,
+  (x, y) => ((x * y) % 2) + ((x * y) % 3) === 0,
+  (x, y) => (((x * y) % 2) + ((x * y) % 3)) % 2 === 0,
+  (x, y) => (((x * y) % 3) + ((x + y) % 2)) % 2 === 0,
+];
+
 // Generates a QR code and works out what every module is used for.
 export function makeQrInfo(text: string, level: Level): QrInfo {
-  const { size, data, reservedBit } = QRCode.create(text, { errorCorrectionLevel: level }).modules;
+  const code = QRCode.create(text, { errorCorrectionLevel: level });
+  const { size, data, reservedBit } = code.modules;
+  const mask = MASKS[code.maskPattern ?? 0]; // always set after create()
 
   // The library marks every module that isn't data as "reserved". We tell
   // those apart by where they are.
@@ -46,21 +62,25 @@ export function makeQrInfo(text: string, level: Level): QrInfo {
   }
 
   const grid: number[][] = [];
+  const unmasked: number[][] = [];
   const kind: ModuleKind[][] = [];
-  const byte: number[][] = [];
+  const bit: number[][] = [];
   for (let y = 0; y < size; y++) {
     grid.push(Array.from(data.slice(y * size, (y + 1) * size)));
     kind.push(Array.from({ length: size }, (_, x) => kindOf(x, y)));
-    byte.push(Array(size).fill(-1));
+    // The mask only flips data modules
+    unmasked.push(grid[y].map((v, x) => (kind[y][x] === "data" && mask(x, y) ? 1 - v : v)));
+    bit.push(Array(size).fill(-1));
   }
 
   // Every 8 data modules make a byte. A few leftover modules don't fit.
   const dataModules = kind.flat().filter((k) => k === "data").length;
   const bytes = Math.floor(dataModules / 8);
 
-  // Bytes are placed in 2-module-wide columns, zigzagging up and down from
-  // the bottom-right corner (the same order the qrcode library uses).
-  let bit = 0;
+  // Number the data modules in reading order: 2-module-wide columns,
+  // zigzagging up and down from the bottom-right corner (the same order the
+  // qrcode library uses). Bits 0-7 are byte 0, bits 8-15 byte 1, and so on.
+  let next = 0;
   let up = true;
   for (let col = size - 1; col > 0; col -= 2) {
     if (col === 6) col--; // skip the vertical timing line
@@ -68,13 +88,12 @@ export function makeQrInfo(text: string, level: Level): QrInfo {
       const y = up ? size - 1 - i : i;
       for (const x of [col, col - 1]) {
         if (kind[y][x] !== "data") continue;
-        const b = Math.floor(bit / 8);
-        if (b < bytes) byte[y][x] = b;
-        bit++;
+        bit[y][x] = next;
+        next++;
       }
     }
     up = !up;
   }
 
-  return { grid, kind, byte, bytes };
+  return { grid, unmasked, kind, bit, bytes };
 }

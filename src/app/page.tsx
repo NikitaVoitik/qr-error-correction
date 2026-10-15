@@ -2,7 +2,7 @@ import QrDemo from "@/components/QrDemo";
 import ReadingProgress from "@/components/story/ReadingProgress";
 import FlyingQr from "@/components/story/FlyingQr";
 import StartScreen from "@/components/story/StartScreen";
-import Story, { Chapter, Detail, Lead, StepBlock } from "@/components/story/Story";
+import Story, { Bits, Chapter, Detail, Lead, StepBlock } from "@/components/story/Story";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
@@ -100,14 +100,61 @@ export default function Home() {
                 They zigzag from the bottom-right corner, up one column two
                 modules wide, then down the next, around the helper patterns.
               </Detail>
+              <Lead>So how do these bits spell “Hello, QR!”?</Lead>
+            </StepBlock>
+          </Chapter>
+
+          <Chapter number={5} title="Reading the message">
+            <StepBlock step="unmask" term="Unmasking">
+              <Lead>First, the scanner flips the mask back.</Lead>
               <Detail>
-                First comes a short header (“text, 10 characters”), then the
-                characters of “Hello, QR!”, 8 bits each.
+                The format strips said which of the 8 masks was used. Undo it,
+                and the data modules show the real bits of the message.
               </Detail>
-              <Lead>
-                But our short message needs only a few of these bytes. So what
-                are all the others for?
-              </Lead>
+            </StepBlock>
+            <StepBlock step="mode" term="Mode">
+              <Lead>The first 4 bits say what kind of message it is.</Lead>
+              <Detail>
+                <Bits>0100</Bits> means text. Codes with only digits use a
+                different mode that packs them tighter.
+              </Detail>
+            </StepBlock>
+            <StepBlock step="length" term="Length">
+              <Lead>The next 8 bits say how long it is.</Lead>
+              <Detail>
+                <Bits>00001010</Bits> is 10 in binary, and “Hello, QR!” has 10
+                characters.
+              </Detail>
+            </StepBlock>
+            <StepBlock step="letter" term="Characters">
+              <Lead>Then come the characters, 8 bits each.</Lead>
+              <Detail>
+                <Bits>01001000</Bits> is 72, and 72 is the number computers use
+                for “H” (it’s called ASCII).
+              </Detail>
+            </StepBlock>
+            <StepBlock step="letters">
+              <Lead>Ten characters, ten blocks of 8.</Lead>
+              <Detail>
+                Read one after another, they spell “Hello, QR!”.
+              </Detail>
+            </StepBlock>
+            <StepBlock step="filler" term="End and filler">
+              <Lead>Then a stop sign, and filler.</Lead>
+              <Detail>
+                <Bits>0000</Bits> marks the end. The rest of the space for the
+                message is filled with <Bits>11101100</Bits> and{" "}
+                <Bits>00010001</Bits>, again and again. The scanner ignores it.
+              </Detail>
+            </StepBlock>
+            <StepBlock step="backup" term="Backup bytes">
+              <Lead>That’s 16 bytes for the message. The other 28 are backup.</Lead>
+              <Detail>
+                They’re calculated from the first 16, and they can rebuild them
+                when part of the code is damaged. That’s why a scratched code
+                still works.
+              </Detail>
+              <Lead>But how can 28 bytes rebuild ones they’ve never seen?</Lead>
             </StepBlock>
           </Chapter>
         </Story>
