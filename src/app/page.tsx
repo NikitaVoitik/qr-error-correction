@@ -1,10 +1,11 @@
-// 🚧 WORK IN PROGRESS — NOT DONE YET. See NOT_DONE_YET.md 🚧
+import CurveDemo from "@/components/CurveDemo";
 import QrDemo from "@/components/QrDemo";
 import ReadingProgress from "@/components/story/ReadingProgress";
 import FlyingQr from "@/components/story/FlyingQr";
+import MathStory, { MathStep } from "@/components/story/MathStory";
 import StartScreen from "@/components/story/StartScreen";
 import Story, { Bits, Chapter, Detail, Lead, StepBlock } from "@/components/story/Story";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
 // A scroll story with a QR code that sticks to the side.
@@ -17,6 +18,8 @@ import { Separator } from "@/components/ui/separator";
 // - <StepBlock step="any-name" term="Heading">: text that switches the QR card
 //   while it's on screen. The card gets the step name (see StoryQr.tsx).
 // - <Lead> and <Detail>: the big main sentence and the smaller grey lines
+// - <MathStory> and <MathStep>: the same for the maths chapters, but with a
+//   big graph on top and the text below (see StoryGraph.tsx)
 export default function Home() {
   return (
     <>
@@ -155,10 +158,104 @@ export default function Home() {
                 when part of the code is damaged. That’s why a scratched code
                 still works.
               </Detail>
+            </StepBlock>
+            <StepBlock step="repair" term="Level H">
+              <Lead>28 backups are enough to fix 14 wrong bytes.</Lead>
+              <Detail>
+                14 of the 44 bytes is about 30%: that’s what level H means.
+                Lower levels use fewer backups and leave more room for the
+                message.
+              </Detail>
               <Lead>But how can 28 bytes rebuild ones they’ve never seen?</Lead>
             </StepBlock>
           </Chapter>
         </Story>
+
+        <MathStory>
+          <Chapter number={6} title="Backups from a line">
+            <MathStep step="rs-points" term="Reed–Solomon">
+              <Lead>The trick is called Reed–Solomon. Let’s try it on a tiny message: 3 and 5.</Lead>
+              <Detail>
+                Put the numbers on a graph, one per step along x: 3 at x = 1,
+                5 at x = 2.
+              </Detail>
+              <Detail>
+                (Real QR codes use special arithmetic where every result stays
+                a whole byte, 0 to 255. But the idea is the same.)
+              </Detail>
+            </MathStep>
+            <MathStep step="rs-line">
+              <Lead>Draw the line through them and keep going.</Lead>
+              <Detail>
+                At x = 3 the line is at 7, at x = 4 it’s at 9. Those are the
+                backups: we send 3, 5, 7, 9.
+              </Detail>
+            </MathStep>
+            <MathStep step="rs-line-lost" term="Recovery">
+              <Lead>Now lose any two of them.</Lead>
+              <Detail>
+                Say 3 and 7 got scratched off. 5 and 9 are still there, and two
+                points are all you need to draw a line. It’s the same line, so
+                3 and 7 are back.
+              </Detail>
+            </MathStep>
+          </Chapter>
+
+          <Chapter number={7} title="Curves">
+            <MathStep step="rs-curve" term="More numbers">
+              <Lead>Three numbers don’t fit on a line, so we use a curve.</Lead>
+              <Detail>
+                Take 72, 101, 108: “H”, “e”, “l”. Exactly one parabola goes
+                through 3 points, and it gives the backups 93 and 56.
+              </Detail>
+              <Detail>
+                It works for any length: 4 numbers need a curve with one more
+                bend, and so on. Every extra point on the curve is one more
+                backup.
+              </Detail>
+            </MathStep>
+            <MathStep step="rs-curve-lost">
+              <Lead>Again, any 3 of the 5 are enough.</Lead>
+              <Detail>
+                101 and 93 are gone. The parabola through 72, 108 and 56 is the
+                same one, and it passes right through 101 and 93.
+              </Detail>
+            </MathStep>
+            <MathStep step="lagrange" term="Lagrange interpolation">
+              <Lead>How do you find the curve from 3 points? Build it from parts.</Lead>
+              <Detail>
+                Make one part per point: a curve that’s exactly that point’s
+                value there, and 0 at the other two points. Add the three parts
+                up, and the sum hits all three points.
+              </Detail>
+              <Detail>
+                That’s Lagrange’s trick, and it works for any number of points.
+              </Detail>
+            </MathStep>
+            <MathStep step="rs-wrong" term="Wrong numbers">
+              <Lead>A scratch doesn’t always erase a number. Sometimes it changes it.</Lead>
+              <Detail>
+                Then the points don’t all fit one curve, and the scanner has to
+                work out which one is wrong. That costs more: each wrong number
+                uses up two backups instead of one.
+              </Detail>
+            </MathStep>
+          </Chapter>
+        </MathStory>
+
+        <Separator className="my-20" />
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl">Playground: break the message</CardTitle>
+            <CardDescription className="text-lg">
+              Lose numbers, and see when the curve can still bring them back.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <CurveDemo />
+          </CardContent>
+        </Card>
 
         <Separator className="my-20" />
 

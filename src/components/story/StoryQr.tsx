@@ -67,6 +67,11 @@ const STEPS: Record<string, StepView> = {
     unmasked: true,
     parts: [[DATA_BYTES * 8, INFO.bytes * 8]],
   },
+  repair: {
+    title: "Level H",
+    caption: `${INFO.bytes - DATA_BYTES} backups → up to ${(INFO.bytes - DATA_BYTES) / 2} wrong bytes fixed`,
+    parts: bytesBetween(DATA_BYTES, INFO.bytes),
+  },
 };
 
 // The QR card next to the story. It shows the code for the step that's being
