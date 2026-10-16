@@ -41,7 +41,7 @@ export function withBackups(message: number[], backups: number): Point[] {
 
 export type GraphState = {
   message: number[]; // e.g. [72, 101, 108] for "Hel"
-  backups: number; // how many extra points to send
+  backupCount: number; // how many extra points to send
   lost?: number[]; // the x of every number that got lost
   hideCurve?: boolean; // only show the points, not the curve
   parts?: boolean; // also show the Lagrange parts of the curve
@@ -49,7 +49,7 @@ export type GraphState = {
 
 // What a scanner makes of a state: any `message.length` of the numbers that
 // are left give back the curve.
-export function scan({ message, backups, lost = [] }: GraphState) {
+export function scan({ message, backupCount: backups, lost = [] }: GraphState) {
   const sent = withBackups(message, backups);
   const fine = sent.filter((p) => !lost.includes(p.x));
   const curve = fine.length >= message.length ? curveThrough(fine.slice(0, message.length)) : null;

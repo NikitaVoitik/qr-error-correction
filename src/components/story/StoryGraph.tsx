@@ -14,37 +14,37 @@ const STEPS: Record<string, { title: string; caption: string; state: GraphState 
   "rs-points": {
     title: "Our message: 3 and 5",
     caption: "One number per x: 3 at x = 1, 5 at x = 2",
-    state: { message: LINE, backups: 0, hideCurve: true },
+    state: { message: LINE, backupCount: 0, hideCurve: true },
   },
   "rs-line": {
     title: "A line through them",
     caption: "It keeps going: 7 and 9 are the backups",
-    state: { message: LINE, backups: 2 },
+    state: { message: LINE, backupCount: 2 },
   },
   "rs-line-lost": {
     title: "Two numbers lost",
     caption: "5 and 9 are enough to draw the same line again",
-    state: { message: LINE, backups: 2, lost: [1, 3] },
+    state: { message: LINE, backupCount: 2, lost: [1, 3] },
   },
   "rs-curve": {
     title: "“Hel” on a parabola",
     caption: "72, 101, 108 are H, e, l. The curve gives backups 93 and 56",
-    state: { message: HEL, backups: 2 },
+    state: { message: HEL, backupCount: 2 },
   },
   "rs-curve-lost": {
     title: "Two numbers lost",
     caption: "Any 3 of the 5 points give the same parabola",
-    state: { message: HEL, backups: 2, lost: [2, 4] },
+    state: { message: HEL, backupCount: 2, lost: [2, 4] },
   },
   lagrange: {
     title: "Lagrange: one part per point",
     caption: "Each part hits its own point and is 0 at the others. Their sum is the curve",
-    state: { message: HEL, backups: 2, lost: [2, 4], parts: true },
+    state: { message: HEL, backupCount: 2, lost: [2, 4], parts: true },
   },
   "rs-wrong": {
     title: "Every number is on the curve",
     caption: "So a number that isn’t on it must be wrong",
-    state: { message: HEL, backups: 2 },
+    state: { message: HEL, backupCount: 2 },
   },
 };
 

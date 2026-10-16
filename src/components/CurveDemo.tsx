@@ -22,13 +22,13 @@ export default function CurveDemo() {
   const message = Array.from(text).map((c) => c.charCodeAt(0));
   const broken: GraphState = {
     message,
-    backups,
+    backupCount: backups,
     lost,
     hideCurve: lost.length > 0 && !rebuilt,
   };
   const { sent, fine, curve } = scan(broken);
   // Once it's rebuilt, the graph is just the whole message again
-  const state = rebuilt && curve ? { message, backups } : broken;
+  const state = rebuilt && curve ? { message, backupCount: backups } : broken;
 
   // Any change breaks the code again, and it has to be rebuilt
   function change(newLost: number[]) {
