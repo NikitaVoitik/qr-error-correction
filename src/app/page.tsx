@@ -239,6 +239,11 @@ export default function Home() {
                 work out which one is wrong. That costs more: each wrong number
                 uses up two backups instead of one.
               </Detail>
+              <Detail>
+                So with 2 backups, like “Hel”, you can rebuild 2 lost numbers or
+                fix 1 wrong one. Our QR code has 28 backups: up to 28 lost
+                bytes, 14 wrong ones, or a mix, like 10 wrong and 8 lost.
+              </Detail>
             </MathStep>
           </Chapter>
         </MathStory>

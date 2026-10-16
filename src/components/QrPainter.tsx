@@ -40,7 +40,7 @@ export default function QrPainter({ qr }: { qr: number[][] }) {
   }
 
   return (
-    <div className="flex flex-col items-start gap-4">
+    <div className="flex flex-col items-center gap-4">
       {readable ? (
         <p className="rounded-md bg-success/10 px-3 py-2 font-semibold text-success">
           ✅ Still scannable: reads &ldquo;{scanned}&rdquo;

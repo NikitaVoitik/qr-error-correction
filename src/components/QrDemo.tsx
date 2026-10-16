@@ -31,7 +31,7 @@ export default function QrDemo() {
   }
 
   return (
-    <div className="flex flex-col items-start gap-4">
+    <div className="flex flex-col items-center gap-4">
       <div className="flex flex-wrap gap-4">
         <div className="flex flex-col gap-2">
           <Label htmlFor="qr-text">Text</Label>
