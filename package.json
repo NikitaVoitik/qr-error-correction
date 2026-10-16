@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "node -e \"console.warn('\\n🚧  WORK IN PROGRESS — this project is NOT DONE YET (see NOT_DONE_YET.md)  🚧\\n')\"",
     "dev": "next dev",
     "build": "next build",
     "start": "next start"
